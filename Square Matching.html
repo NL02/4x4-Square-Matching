@@ -1,0 +1,346 @@
+<!Doctype html> 
+<html>
+    <head>
+        <title>Square Matching Game</title>
+        <style>
+        /* CSS here */
+        .game-square{
+            box-sizing: border-box;
+            border: 1px solid #000;
+            width: 100px;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-square > div {
+            width: 100%;
+            height: 200%;
+            position: absolute;
+            top: 0;
+            transition: 400ms;
+            border-radius: 4px;
+        }
+
+        .game-square > div > div {
+            height: 50%;
+        }
+
+        .game-square > div > div:first-child {
+            background-color: gray;
+        }
+
+        .flip > div {
+            top: -100%
+        }
+
+        .square-0 {
+            background-color: greenyellow;
+        }
+
+        .square-1 {
+            background-color: red;
+        }
+
+        .square-2 {
+            background-color: blue;
+        }
+
+        .square-3 {
+            background-color: rgb(1, 255, 255);
+        }
+
+        .square-4 {
+            background-color: rgba(167, 117, 70, 0.788);
+        }
+
+        .square-5 {
+            background-color: cadetblue;
+        }
+
+        .square-6 {
+            background-color: yellow;
+        }
+
+        .square-7 {
+            background-color: rgb(111, 0, 255);
+        }
+
+        .square-8 {
+            background-color: rgb(250, 114, 239);
+        }
+
+        .square-9 {
+            background-color: rgb(119, 255, 171);
+        }
+        
+
+        #game {
+            width: 400px;
+            height: 400px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            border: 1px solid rgb(4, 0, 255);
+        }
+        
+        #reset-button {
+            padding: 50px 100px;
+            font-size: 20px;
+            border-radius: 12px;
+            
+        }
+        
+        #reset-button:hover{
+            background-color: rgba(128, 128, 128, 0.13); /* Green */
+            transition-duration: 400ms;
+        }
+
+        </style>
+    </head>
+    <body>
+        <!-- HTML here -->
+        <h1>4x4 Color-Pair Matching Game</h1>
+        <div class='container'>
+            <div id='game'>
+                <!-- Game Squares-->
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+                
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class='game-square'>
+                    <div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button id = "reset-button" onclick = "clearGame()">reset</button>
+        </div>
+
+        <script>
+            // JS Code here
+            var colors = [];
+            var gameSquares = [];
+            var firstSquare = null;
+            for (var i = 0; i < 10; i++) {
+                colors.push('square-' + i);
+            }
+
+            function GameSquare(el, color) {
+                this.el = el;
+                this.isOpen = false;
+                this.isLocked = false;
+                this.el.addEventListener("click", this, false);
+                this.setColor(color); // <-- sets the color 
+            }
+
+            // Event Handler
+            GameSquare.prototype.handleEvent = function(e) {
+                switch (e.type) {
+                    case "click":
+                        if(this.isOpen || this.isLocked) {
+                            return;
+                        }
+                        this.isOpen = true;
+                        this.el.classList.add('flip');
+                        checkGame(this); // This checks the game 
+                }
+            }
+
+            // Reset
+            GameSquare.prototype.reset = function() {
+                this.isOpen = false;
+                this.isLocked = false;
+                this.el.classList.remove('flip');
+            }
+
+            // Lock
+            GameSquare.prototype.lock = function() {
+                this.isLocked = true;
+                this.isOpen = true;
+            }
+
+            // Set Color
+            GameSquare.prototype.setColor = function(color) {
+                this.el.children[0].children[1].classList.remove(this.color);
+                this.color = color;
+                this.el.children[0].children[1].classList.add(color);
+            }
+            
+            // Set Up Game
+            function setupGame() {
+                var array = document.getElementsByClassName("game-square");
+                var randomColors = getSomeColors();                     // Get an array of 8 random color pairs 
+                for (var i = 0; i < array.length; i++) {             
+                    var index = random(randomColors.length);           // Get a random index
+                    var color = randomColors.splice(index, 1)[0];       //Get the color at that index
+                    // Use that color to initialize the GameSquare
+                    gameSquares.push(new GameSquare(array[i], color));
+                }
+            }
+
+            // Function returns a number from 0 to n-1
+            function random(n) {
+                return Math.floor(Math.random() * n);
+            }
+            
+            // Function that picks out 8 random colors and makes an array with two copies of each color 
+            function getSomeColors() {
+                var colorscopy = colors.slice();
+                var randomColors = [];
+                for (var i = 0; i < 8; i++) {
+                    var index = random(colorscopy.length);
+                    randomColors.push(colorscopy.splice(index, 1)[0]);
+                }
+                return randomColors.concat(randomColors.slice());
+            }
+
+            // Checking the Game Status for clicks 
+            function checkGame(gameSquare) {
+                if (firstSquare == null) {
+                    firstSquare = gameSquare;
+                    return
+                }
+
+                if (firstSquare.color === gameSquare.color) {
+                    firstSquare.lock();
+                    gameSquare.lock();
+                } else {
+                    var a = firstSquare;
+                    var b = gameSquare;
+                    setTimeout(function() {
+                        a.reset();
+                        b.reset();
+                        firstSquare = null;
+                    }, 400);
+                }
+                firstSquare = null;
+            }
+            
+            // Randomize Colors function
+            function randomizeColors() {
+                var randomColors = getSomeColors();
+                gameSquares.forEach(function(gameSquare) {
+                    var color = randomColors.splice(random(randomColors.length), 1)[0];
+                    gameSquare.setColor(color);
+                });
+            }
+            
+            // Clear Game
+            function clearGame() {
+                gameSquares.forEach(function(gameSquare) {
+                    gameSquare.reset();
+                });
+                setTimeout(function() {
+                    randomizeColors();
+                }, 500);
+            }
+
+            setupGame();
+
+        </script>
+    </body>
+</html>
